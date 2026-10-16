@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tantangan Evaluasi Rasio dan Skala - Matematika Kelas 6 SD</title>
+  <meta name="description" content="Aplikasi evaluasi matematika interaktif kelas 6 SD materi Rasio dan Skala (LOTS, MOTS, HOTS) dengan penilaian otomatis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; font-size: 12pt; }
+      .print-box { box-shadow: none !important; border: 1px solid #ccc !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+  <!-- Top Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 no-print">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          📐
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Tantangan Evaluasi Rasio & Skala</h1>
+          <p class="text-xs text-slate-500">Matematika Kelas 6 SD · LOTS–MOTS–HOTS</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnOpenTeacherModal" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
+          📋 Panel Guru
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+    <!-- View 1: Welcome Screen -->
+    <div id="viewWelcome" class="space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div class="text-center max-w-2xl mx-auto space-y-4">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-3xl mb-2">
+            🧭
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Selamat Datang di Evaluasi Mandiri!
+          </h2>
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Uji pemahamanmu tentang <strong>Rasio dan Skala</strong> melalui 25 soal latihan bergradasi dari LOTS (dasar), MOTS (penerapan), hingga HOTS (penalaran tinggi). Nilai akan dihitung secara otomatis setelah selesai.
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start">
+          <!-- Form Input -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+            <h3 class="font-bold text-slate-900 text-sm">Identitas Siswa</h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
+              <input type="text" id="inputStudentName" placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+              <p id="nameError" class="text-xs text-rose-600 mt-1 hidden">Nama siswa wajib diisi sebelum mulai!</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Kelas</label>
+              <input type="text" id="inputStudentGrade" placeholder="Contoh: VI A" value="VI A" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            </div>
+            <button id="btnStartExam" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition-colors text-sm flex items-center justify-center gap-2">
+              <span>🚀 Mulai Evaluasi</span>
+            </button>
+          </div>
+
+          <!-- Petunjuk Pengerjaan -->
+          <div class="bg-indigo-50/60 border border-indigo-100 rounded-xl p-5 space-y-3">
+            <h3 class="font-bold text-indigo-950 text-sm flex items-center gap-1.5">
+              <span>📌</span> Petunjuk Penting:
+            </h3>
+            <ol class="text-xs text-indigo-900/90 space-y-2 list-decimal list-inside leading-relaxed">
+              <li>Baca setiap soal dengan teliti dan cermat.</li>
+              <li>Pilih satu jawaban yang paling tepat (A, B, C, atau D).</li>
+              <li>Gunakan tombol <strong>Tandai</strong> jika kamu masih ragu-ragu.</li>
+              <li>Periksa kembali jawaban sebelum menekan Kumpulkan.</li>
+              <li>Nilai akan ditampilkan setelah evaluasi dikumpulkan. Jawaban tidak dapat diubah lagi.</li>
+            </ol>
+            <div class="pt-2 border-t border-indigo-100 text-xs text-indigo-800">
+              Total <strong>25 Soal</strong> (Benar = 4 poin, Maksimal = 100 poin).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: Exam Screen -->
+    <div id="viewExam" class="hidden space-y-5">
+      <!-- Status Bar -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div>
+          <span class="text-xs text-slate-500">Siswa:</span>
+          <span id="examStudentName" class="text-sm font-bold text-slate-800 ml-1"></span>
+          <span id="examStudentGrade" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded ml-2 font-medium"></span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-xs text-slate-600">
+            Terjawab: <strong id="examAnsweredCount" class="text-indigo-600">0</strong> / 25
+          </div>
+          <div class="w-24 sm:w-36 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+            <div id="examProgressBar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <!-- Question Card -->
+        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span id="examQuestionBadge" class="text-xs font-bold px-2.5 py-1 rounded bg-indigo-100 text-indigo-800">Soal 1</span>
+              <span id="examLevelBadge" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">LOTS</span>
+              <span id="examCategoryBadge" class="text-xs text-slate-500">Rasio</span>
+            </div>
+            <button id="btnToggleFlag" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-1.5">
+              <span id="flagIcon">🏳️</span> <span id="flagLabel">Tandai Ragu</span>
+            </button>
+          </div>
+
+          <!-- Question Text -->
+          <div class="space-y-2">
+            <p id="examQuestionTopic" class="text-xs font-medium text-slate-400 uppercase tracking-wider"></p>
+            <p id="examQuestionText" class="text-base sm:text-lg font-medium text-slate-900 leading-relaxed"></p>
+          </div>
+
+          <!-- Options -->
+          <div id="examOptionsList" class="space-y-3">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Nav Buttons -->
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+            <button id="btnPrevQuestion" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-sm transition-colors flex items-center gap-1">
+              ← Sebelumnya
+            </button>
+            <div class="flex items-center gap-2">
+              <button id="btnNextQuestion" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-colors flex items-center gap-1">
+                Berikutnya →
+              </button>
+              <button id="btnFinishExam" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow">
+                Kumpulkan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Number Navigation Grid -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-slate-900 text-sm">Daftar Nomor Soal</h3>
+            <span class="text-xs text-slate-500">25 Butir</span>
+          </div>
+          <div id="examNumbersGrid" class="grid grid-cols-5 gap-2">
+            <!-- 1 to 25 buttons rendered dynamically -->
+          </div>
+          <!-- Legend -->
+          <div class="pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-indigo-600 text-white inline-block"></span> Sudah Dijawab
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-amber-400 text-white inline-block"></span> Ditandai Ragu
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-slate-100 border border-slate-300 inline-block"></span> Belum Dijawab
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 3: Result Screen -->
+    <div id="viewResult" class="hidden space-y-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6 print-box">
+        <!-- Result Header -->
+        <div class="text-center space-y-2">
+          <span class="text-xs uppercase tracking-widest font-bold text-indigo-600">Hasil Evaluasi Resmi</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Rapor Pencapaian Siswa</h2>
+          <p id="resStudentInfo" class="text-sm text-slate-600"></p>
+        </div>
+
+        <!-- Big Score Display -->
+        <div class="flex flex-col items-center justify-center py-4">
+          <div class="relative w-44 h-44 rounded-full flex flex-col items-center justify-center border-8 border-indigo-600 bg-indigo-50/50 shadow-inner">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Nilai Akhir</span>
+            <div class="text-5xl font-extrabold text-indigo-700 tracking-tight font-mono" id="resScoreText">0</div>
+            <span class="text-xs font-bold text-slate-400">skor maks 100</span>
+          </div>
+          <p id="resMotivation" class="mt-4 text-center max-w-lg font-medium text-slate-700 text-sm sm:text-base px-4"></p>
+        </div>
+
+        <!-- Quick Summary Stats -->
+        <div class="grid grid-cols-3 gap-3 max-w-xl mx-auto text-center">
+          <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+            <span class="text-xs text-emerald-700 font-semibold">Benar</span>
+            <div id="resCorrectCount" class="text-2xl font-bold text-emerald-800 font-mono">0</div>
+            <span class="text-[11px] text-emerald-600">(x4 poin)</span>
+          </div>
+          <div class="p-3 bg-rose-50 rounded-xl border border-rose-100">
+            <span class="text-xs text-rose-700 font-semibold">Salah</span>
+            <div id="resIncorrectCount" class="text-2xl font-bold text-rose-800 font-mono">0</div>
+            <span class="text-[11px] text-rose-600">(0 poin)</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-xs text-slate-600 font-semibold">Kosong</span>
+            <div id="resEmptyCount" class="text-2xl font-bold text-slate-700 font-mono">0</div>
+            <span class="text-[11px] text-slate-500">(0 poin)</span>
+          </div>
+        </div>
+
+        <!-- Cognitive Level Breakdown -->
+        <div class="max-w-2xl mx-auto space-y-3 pt-2">
+          <h3 class="font-bold text-slate-900 text-sm border-b border-slate-200 pb-2">Analisis Capaian Berpikir (LOTS - MOTS - HOTS)</h3>
+          
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>LOTS (Dasar & Perhitungan Langsung)</span>
+                <span id="resLotsText">0 / 8 Soal</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div id="resLotsBar" class="bg-blue-600 h-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>MOTS (Penerapan & Konversi Satuan)</span>
+                <span id="resMotsText">0 / 10 Soal</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div id="resMotsBar" class="bg-indigo-600 h-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <span>HOTS (Penalaran Tingkat Tinggi & Masalah Kontekstual)</span>
+                <span id="resHotsText">0 / 7 Soal</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div id="resHotsBar" class="bg-purple-600 h-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-6 border-t border-slate-100 flex flex-wrap items-center justify-center gap-3 no-print">
+          <button onclick="window.print()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-sm transition-colors flex items-center gap-2">
+            🖨️ Cetak Rapor
+          </button>
+          <button id="btnNewExam" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-colors shadow">
+            🔄 Sesi Siswa Baru
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Confirm Modal -->
+  <div id="modalConfirm" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl">
+      <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mx-auto">
+        ⚠️
+      </div>
+      <h3 class="text-lg font-bold text-center text-slate-900">Konfirmasi Pengumpulan</h3>
+      <div class="text-sm text-slate-600 space-y-2 text-center">
+        <p>Apakah kamu yakin ingin mengumpulkan evaluasi ini sekarang?</p>
+        <div class="p-3 bg-slate-50 rounded-xl text-xs space-y-1">
+          <div>Sudah dijawab: <strong id="modalAnsweredCount" class="text-emerald-700">0</strong> dari 25 soal</div>
+          <div id="modalUnansweredBox" class="text-rose-600 font-semibold">Masih ada 0 soal yang belum dijawab!</div>
+        </div>
+        <p class="text-xs text-slate-500">Setelah dikumpulkan, seluruh jawaban terkunci dan nilaimu akan langsung dihitung.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button id="btnCancelSubmit" class="py-2.5 px-4 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50">
+          Periksa Lagi
+        </button>
+        <button id="btnConfirmSubmit" class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm">
+          Ya, Kumpulkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Recap Modal -->
+  <div id="modalTeacher" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Rekap Hasil Siswa (Perangkat Ini)</h3>
+          <p class="text-xs text-slate-500">Penyimpanan lokal pada browser perangkat ini</p>
+        </div>
+        <button id="btnCloseTeacherModal" class="w-8 h-8 rounded-lg hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold">
+          ✕
+        </button>
+      </div>
+      <div class="p-5 overflow-y-auto flex-1 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span id="teacherRecordCount" class="text-xs font-semibold text-slate-600">0 Catatan Tersimpan</span>
+          <div class="flex items-center gap-2">
+            <button id="btnExportCSV" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors">
+              📥 Unduh CSV (Excel)
+            </button>
+            <button id="btnClearHistory" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors">
+              Hapus Semua
+            </button>
+          </div>
+        </div>
+        <div class="border border-slate-200 rounded-xl overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-100 text-slate-700 font-semibold uppercase text-[10px]">
+              <tr>
+                <th class="p-2.5">Waktu</th>
+                <th class="p-2.5">Nama</th>
+                <th class="p-2.5">Kelas</th>
+                <th class="p-2.5">Nilai</th>
+                <th class="p-2.5">B/S/K</th>
+                <th class="p-2.5">LOTS</th>
+                <th class="p-2.5">MOTS</th>
+                <th class="p-2.5">HOTS</th>
+              </tr>
+            </thead>
+            <tbody id="teacherTableBody" class="divide-y divide-slate-200">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [{"id":1,"level":"LOTS","category":"Rasio","topic":"Menyederhanakan Rasio","question":"Bentuk paling sederhana dari rasio 18 : 24 adalah ...","options":[{"key":"A","text":"2 : 3"},{"key":"B","text":"3 : 4"},{"key":"C","text":"3 : 5"},{"key":"D","text":"4 : 5"}],"correctAnswer":"B"},{"id":2,"level":"LOTS","category":"Skala","topic":"Makna Skala Peta","question":"Sebuah peta memiliki skala 1 : 250.000. Arti yang tepat dari skala tersebut adalah ...","options":[{"key":"A","text":"Setiap 1 cm pada peta mewakili 250.000 cm pada jarak sebenarnya"},{"key":"B","text":"Setiap 1 km pada peta mewakili 250.000 cm pada jarak sebenarnya"},{"key":"C","text":"Setiap 1 cm pada jarak sebenarnya mewakili 250.000 cm pada peta"},{"key":"D","text":"Setiap 250.000 cm pada peta mewakili 1 meter pada jarak sebenarnya"}],"correctAnswer":"A"},{"id":3,"level":"LOTS","category":"Skala","topic":"Konversi Satuan Panjang","question":"Jarak kota P ke kota Q pada peta adalah 4 cm. Jika jarak sebenarnya adalah 8 km, berapa jarak sebenarnya tersebut jika dinyatakan dalam satuan sentimeter (cm)?","options":[{"key":"A","text":"8.000 cm"},{"key":"B","text":"80.000 cm"},{"key":"C","text":"800.000 cm"},{"key":"D","text":"8.000.000 cm"}],"correctAnswer":"C"},{"id":4,"level":"LOTS","category":"Rasio","topic":"Rasio Bagian terhadap Keseluruhan","question":"Di dalam sebuah kotak terdapat 12 kelereng merah dan 18 kelereng biru. Rasio banyak kelereng merah terhadap seluruh kelereng di dalam kotak adalah ...","options":[{"key":"A","text":"2 : 3"},{"key":"B","text":"2 : 5"},{"key":"C","text":"3 : 5"},{"key":"D","text":"3 : 2"}],"correctAnswer":"B"},{"id":5,"level":"LOTS","category":"Skala","topic":"Menghitung Jarak Sebenarnya","question":"Jarak antara dua kota pada peta berskala 1 : 500.000 adalah 3 cm. Jarak sebenarnya antara kedua kota tersebut adalah ...","options":[{"key":"A","text":"1,5 km"},{"key":"B","text":"15 km"},{"key":"C","text":"150 km"},{"key":"D","text":"1.500 km"}],"correctAnswer":"B"},{"id":6,"level":"LOTS","category":"Rasio","topic":"Menentukan Rasio Senilai","question":"Rasio 4 : 7 senilai dengan rasio ...","options":[{"key":"A","text":"8 : 12"},{"key":"B","text":"12 : 21"},{"key":"C","text":"16 : 24"},{"key":"D","text":"20 : 28"}],"correctAnswer":"B"},{"id":7,"level":"LOTS","category":"Skala","topic":"Menghitung Jarak pada Denah","question":"Jarak sebenarnya antara rumah Bayu dan sekolah adalah 600 meter. Jika digambar pada denah berskala 1 : 10.000, maka jarak pada denah tersebut adalah ...","options":[{"key":"A","text":"60 cm"},{"key":"B","text":"6 cm"},{"key":"C","text":"0,6 cm"},{"key":"D","text":"0,06 cm"}],"correctAnswer":"B"},{"id":8,"level":"LOTS","category":"Rasio","topic":"Rasio Bagian terhadap Bagian","question":"Di dalam sebuah kelas terdapat 15 siswa laki-laki dan 20 siswa perempuan. Rasio banyak siswa perempuan terhadap siswa laki-laki adalah ...","options":[{"key":"A","text":"3 : 4"},{"key":"B","text":"4 : 3"},{"key":"C","text":"3 : 7"},{"key":"D","text":"4 : 7"}],"correctAnswer":"B"},{"id":9,"level":"MOTS","category":"Skala","topic":"Menentukan Skala Peta","question":"Jarak antara kota A dan kota B pada peta adalah 5 cm. Jarak sebenarnya kedua kota tersebut adalah 125 km. Skala peta tersebut adalah ...","options":[{"key":"A","text":"1 : 25.000"},{"key":"B","text":"1 : 250.000"},{"key":"C","text":"1 : 2.500.000"},{"key":"D","text":"1 : 25.000.000"}],"correctAnswer":"C"},{"id":10,"level":"MOTS","category":"Rasio","topic":"Menentukan Jumlah dari Rasio","question":"Rasio umur Rina dan umur kakaknya adalah 3 : 5. Jika jumlah umur mereka berdua adalah 24 tahun, maka umur Rina saat ini adalah ...","options":[{"key":"A","text":"9 tahun"},{"key":"B","text":"12 tahun"},{"key":"C","text":"15 tahun"},{"key":"D","text":"18 tahun"}],"correctAnswer":"A"},{"id":11,"level":"MOTS","category":"Rasio","topic":"Menghitung Selisih Berdasarkan Rasio","question":"Perbandingan tabungan Ahmad dan Dani adalah 4 : 7. Jika selisih uang tabungan mereka adalah Rp45.000,00, maka besar uang tabungan Dani adalah ...","options":[{"key":"A","text":"Rp60.000,00"},{"key":"B","text":"Rp75.000,00"},{"key":"C","text":"Rp105.000,00"},{"key":"D","text":"Rp165.000,00"}],"correctAnswer":"C"},{"id":12,"level":"MOTS","category":"Skala","topic":"Denah Panjang dan Lebar","question":"Sebuah lapangan olahraga berbentuk persegi panjang dengan ukuran panjang 80 m dan lebar 50 m. Jika lapangan digambar dengan skala 1 : 1.000, maka ukuran panjang dan lebar pada gambar berturut-turut adalah ...","options":[{"key":"A","text":"8 cm dan 5 cm"},{"key":"B","text":"80 cm dan 50 cm"},{"key":"C","text":"4 cm dan 2,5 cm"},{"key":"D","text":"16 cm dan 10 cm"}],"correctAnswer":"A"},{"id":13,"level":"MOTS","category":"Rasio","topic":"Proporsi Kontekstual Sehari-hari","question":"Untuk membuat 12 gelas es sirup manis diperlukan 3 cangkir sirup kental. Berapa cangkir sirup kental yang diperlukan untuk membuat 28 gelas es sirup manis dengan kepekatan rasa yang sama?","options":[{"key":"A","text":"6 cangkir"},{"key":"B","text":"7 cangkir"},{"key":"C","text":"8 cangkir"},{"key":"D","text":"9 cangkir"}],"correctAnswer":"B"},{"id":14,"level":"MOTS","category":"Rasio","topic":"Rasio Tiga Nilai Bertingkat","question":"Rasio uang saku Budi, Candra, dan Dedi adalah 2 : 3 : 5. Jika uang saku Candra adalah Rp15.000,00, maka jumlah seluruh uang saku ketiga anak tersebut adalah ...","options":[{"key":"A","text":"Rp40.000,00"},{"key":"B","text":"Rp45.000,00"},{"key":"C","text":"Rp50.000,00"},{"key":"D","text":"Rp60.000,00"}],"correctAnswer":"C"},{"id":15,"level":"MOTS","category":"Skala","topic":"Menghitung Jarak Peta Skala Besar","question":"Jarak kota M ke kota N sebenarnya adalah 180 km. Jika kedua kota digambar pada peta dengan skala 1 : 1.200.000, maka jarak kedua kota pada peta adalah ...","options":[{"key":"A","text":"12 cm"},{"key":"B","text":"15 cm"},{"key":"C","text":"18 cm"},{"key":"D","text":"21 cm"}],"correctAnswer":"B"},{"id":16,"level":"MOTS","category":"Rasio","topic":"Menentukan Total Berdasarkan Bagian","question":"Di sebuah koperasi sekolah, rasio banyak buku tulis terhadap pensil adalah 5 : 4. Jika jumlah pensil adalah 48 buah, berapakah jumlah seluruh buku tulis dan pensil jika digabungkan?","options":[{"key":"A","text":"60 buah"},{"key":"B","text":"96 buah"},{"key":"C","text":"108 buah"},{"key":"D","text":"120 buah"}],"correctAnswer":"C"},{"id":17,"level":"MOTS","category":"Skala","topic":"Skala Tinggi Bangunan","question":"Sebuah menara komunikasi memiliki tinggi sebenarnya 45 meter. Pada gambar arsitektur, tinggi menara tersebut adalah 15 cm. Skala gambar arsitektur tersebut adalah ...","options":[{"key":"A","text":"1 : 30"},{"key":"B","text":"1 : 300"},{"key":"C","text":"1 : 3.000"},{"key":"D","text":"1 : 30.000"}],"correctAnswer":"B"},{"id":18,"level":"MOTS","category":"Rasio","topic":"Perbandingan Laju Pemakaian Bahan Bakar","question":"Sebuah mobil menempuh jarak 75 km dengan menghabiskan bensin sebanyak 5 liter. Jika mobil tersebut masih memiliki bensin sebanyak 8 liter di dalam tangki, jarak yang dapat ditempuh mobil tersebut dengan konsumsi yang sama adalah ...","options":[{"key":"A","text":"100 km"},{"key":"B","text":"110 km"},{"key":"C","text":"120 km"},{"key":"D","text":"130 km"}],"correctAnswer":"C"},{"id":19,"level":"HOTS","category":"Skala","topic":"Membandingkan Dua Skala Peta Berbeda","question":"Jarak kota K dan kota L pada Peta I yang berskala 1 : 800.000 adalah 6 cm. Pada Peta II yang belum diketahui skalanya, jarak kedua kota tersebut adalah 10 cm. Berapakah skala Peta II tersebut?","options":[{"key":"A","text":"1 : 480.000"},{"key":"B","text":"1 : 520.000"},{"key":"C","text":"1 : 640.000"},{"key":"D","text":"1 : 1.200.000"}],"correctAnswer":"A"},{"id":20,"level":"HOTS","category":"Skala","topic":"Menghitung Luas Sebenarnya dari Denah","question":"Denah sebidang tanah milik Pak Danu digambar berbentuk persegi panjang berukuran panjang 6 cm dan lebar 4 cm. Skala denah tanah tersebut adalah 1 : 500. Berapakah luas tanah sebenarnya milik Pak Danu?","options":[{"key":"A","text":"60 m²"},{"key":"B","text":"300 m²"},{"key":"C","text":"600 m²"},{"key":"D","text":"1.200 m²"}],"correctAnswer":"C"},{"id":21,"level":"HOTS","category":"Rasio","topic":"Penggabungan Dua Rasio Bertingkat","question":"Perbandingan kelereng Farhan dan Galih adalah 2 : 3, sedangkan perbandingan kelereng Galih dan Hendra adalah 4 : 5. Jika jumlah seluruh kelereng ketiga anak tersebut adalah 70 butir, banyak kelereng yang dimiliki Farhan adalah ...","options":[{"key":"A","text":"16 butir"},{"key":"B","text":"20 butir"},{"key":"C","text":"24 butir"},{"key":"D","text":"30 butir"}],"correctAnswer":"A"},{"id":22,"level":"HOTS","category":"Rasio","topic":"Analisis Perubahan Rasio Dinamis","question":"Di sebuah peternakan, rasio banyak ayam jantan terhadap ayam betina mula-mula adalah 3 : 5. Peternak kemudian menambahkan 6 ekor ayam jantan ke dalam kandang sehingga banyak ayam jantan dan betina menjadi sama banyak. Berapakah banyak ayam betina di dalam kandang tersebut?","options":[{"key":"A","text":"12 ekor"},{"key":"B","text":"15 ekor"},{"key":"C","text":"18 ekor"},{"key":"D","text":"20 ekor"}],"correctAnswer":"B"},{"id":23,"level":"HOTS","category":"Skala","topic":"Rute Peta Bertahap dan Waktu Tempuh","question":"Pada peta berskala 1 : 1.500.000, Pak Doni berkendara dari kota P menuju kota R melalui kota Q. Jarak kota P ke Q pada peta adalah 4 cm, sedangkan jarak kota Q ke R pada peta adalah 6 cm. Jika Pak Doni mengendarai motor dengan kecepatan rata-rata 50 km/jam tanpa berhenti, berapa jam waktu tempuh perjalanan Pak Doni?","options":[{"key":"A","text":"2,5 jam"},{"key":"B","text":"3 jam"},{"key":"C","text":"3,5 jam"},{"key":"D","text":"4 jam"}],"correctAnswer":"B"},{"id":24,"level":"HOTS","category":"Rasio","topic":"Analisis Rasio Nilai Terbaik / Ekonomis","question":"Toko \"Berkah\" menjual buku tulis dengan paket 6 buku seharga Rp27.000,00. Sementara itu, Toko \"Cahaya\" menjual jenis buku yang sama dengan paket 8 buku seharga Rp34.000,00. Manakah pernyataan analisis harga satuan yang paling tepat?","options":[{"key":"A","text":"Buku di Toko Berkah lebih murah karena harga satuannya Rp4.250,00"},{"key":"B","text":"Buku di Toko Cahaya lebih murah karena harga satuannya Rp4.250,00"},{"key":"C","text":"Buku di kedua toko memiliki harga satuan yang sama yaitu Rp4.500,00"},{"key":"D","text":"Buku di Toko Berkah lebih hemat Rp500,00 per buku dibandingkan Toko Cahaya"}],"correctAnswer":"B"},{"id":25,"level":"HOTS","category":"Skala","topic":"Penalaran Skala Setelah Pembesaran Peta","question":"Sebuah peta pulau berskala 1 : 600.000 diperbesar sehingga panjang pulau pada gambar peta baru menjadi 3 kali panjang pulau pada peta semula. Berapakah skala peta yang baru tersebut?","options":[{"key":"A","text":"1 : 1.800.000"},{"key":"B","text":"1 : 1.200.000"},{"key":"C","text":"1 : 300.000"},{"key":"D","text":"1 : 200.000"}],"correctAnswer":"D"}];
+    let currentQuestionIndex = 0;
+    let answers = {};
+    let flagged = {};
+    let student = { name: '', grade: 'VI A', startTime: 0 };
+    const STORAGE_KEY = 'tantangan_rasio_skala_evaluasi_history_v1';
+
+    // Elements
+    const viewWelcome = document.getElementById('viewWelcome');
+    const viewExam = document.getElementById('viewExam');
+    const viewResult = document.getElementById('viewResult');
+    const inputStudentName = document.getElementById('inputStudentName');
+    const inputStudentGrade = document.getElementById('inputStudentGrade');
+    const btnStartExam = document.getElementById('btnStartExam');
+    const nameError = document.getElementById('nameError');
+
+    // Exam elements
+    const examStudentName = document.getElementById('examStudentName');
+    const examStudentGrade = document.getElementById('examStudentGrade');
+    const examAnsweredCount = document.getElementById('examAnsweredCount');
+    const examProgressBar = document.getElementById('examProgressBar');
+    const examQuestionBadge = document.getElementById('examQuestionBadge');
+    const examLevelBadge = document.getElementById('examLevelBadge');
+    const examCategoryBadge = document.getElementById('examCategoryBadge');
+    const examQuestionTopic = document.getElementById('examQuestionTopic');
+    const examQuestionText = document.getElementById('examQuestionText');
+    const examOptionsList = document.getElementById('examOptionsList');
+    const examNumbersGrid = document.getElementById('examNumbersGrid');
+    const btnPrevQuestion = document.getElementById('btnPrevQuestion');
+    const btnNextQuestion = document.getElementById('btnNextQuestion');
+    const btnFinishExam = document.getElementById('btnFinishExam');
+    const btnToggleFlag = document.getElementById('btnToggleFlag');
+    const flagIcon = document.getElementById('flagIcon');
+    const flagLabel = document.getElementById('flagLabel');
+
+    // Modals
+    const modalConfirm = document.getElementById('modalConfirm');
+    const btnCancelSubmit = document.getElementById('btnCancelSubmit');
+    const btnConfirmSubmit = document.getElementById('btnConfirmSubmit');
+    const modalAnsweredCount = document.getElementById('modalAnsweredCount');
+    const modalUnansweredBox = document.getElementById('modalUnansweredBox');
+
+    const modalTeacher = document.getElementById('modalTeacher');
+    const btnOpenTeacherModal = document.getElementById('btnOpenTeacherModal');
+    const btnCloseTeacherModal = document.getElementById('btnCloseTeacherModal');
+    const teacherTableBody = document.getElementById('teacherTableBody');
+    const teacherRecordCount = document.getElementById('teacherRecordCount');
+    const btnExportCSV = document.getElementById('btnExportCSV');
+    const btnClearHistory = document.getElementById('btnClearHistory');
+    const btnNewExam = document.getElementById('btnNewExam');
+
+    // Start Exam
+    btnStartExam.addEventListener('click', () => {
+      const name = inputStudentName.value.trim();
+      if (!name) {
+        nameError.classList.remove('hidden');
+        inputStudentName.focus();
+        return;
+      }
+      nameError.classList.add('hidden');
+      student.name = name;
+      student.grade = inputStudentGrade.value.trim() || 'VI';
+      student.startTime = Date.now();
+      answers = {};
+      flagged = {};
+      currentQuestionIndex = 0;
+
+      viewWelcome.classList.add('hidden');
+      viewResult.classList.add('hidden');
+      viewExam.classList.remove('hidden');
+
+      examStudentName.textContent = student.name;
+      examStudentGrade.textContent = student.grade;
+      renderExam();
+    });
+
+    function renderExam() {
+      const q = questions[currentQuestionIndex];
+      examQuestionBadge.textContent = 'Soal ' + (currentQuestionIndex + 1) + ' dari ' + questions.length;
+      examLevelBadge.textContent = q.level;
+      examCategoryBadge.textContent = q.category;
+      examQuestionTopic.textContent = q.topic;
+      examQuestionText.textContent = q.question;
+
+      // Flag status
+      if (flagged[q.id]) {
+        flagIcon.textContent = '🚩';
+        flagLabel.textContent = 'Ditandai Ragu';
+        btnToggleFlag.className = 'text-xs font-medium px-3 py-1.5 rounded-lg border border-amber-400 text-amber-900 bg-amber-200 transition-colors flex items-center gap-1.5';
+      } else {
+        flagIcon.textContent = '🏳️';
+        flagLabel.textContent = 'Tandai Ragu';
+        btnToggleFlag.className = 'text-xs font-medium px-3 py-1.5 rounded-lg border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-1.5';
+      }
+
+      // Render options
+      examOptionsList.innerHTML = '';
+      q.options.forEach(opt => {
+        const isSelected = answers[q.id] === opt.key;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'w-full text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 ' +
+          (isSelected ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-semibold shadow-xs' : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800');
+        
+        btn.innerHTML = '<span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ' +
+          (isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700') + '">' + opt.key + '</span>' +
+          '<span class="text-sm sm:text-base pt-0.5 leading-snug">' + opt.text + '</span>';
+
+        btn.onclick = () => {
+          answers[q.id] = opt.key;
+          renderExam();
+        };
+        examOptionsList.appendChild(btn);
+      });
+
+      // Update question grid
+      examNumbersGrid.innerHTML = '';
+      questions.forEach((item, idx) => {
+        const isCur = idx === currentQuestionIndex;
+        const isAns = !!answers[item.id];
+        const isFlg = !!flagged[item.id];
+
+        let bgClass = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+        if (isFlg) bgClass = 'bg-amber-400 text-amber-950 font-bold border-amber-500';
+        else if (isAns) bgClass = 'bg-indigo-600 text-white font-bold border-indigo-600';
+
+        if (isCur) bgClass += ' ring-2 ring-slate-900 ring-offset-2';
+
+        const numBtn = document.createElement('button');
+        numBtn.type = 'button';
+        numBtn.className = 'h-10 rounded-lg text-xs font-semibold border transition-all flex items-center justify-center relative ' + bgClass;
+        numBtn.textContent = (idx + 1);
+        numBtn.onclick = () => {
+          currentQuestionIndex = idx;
+          renderExam();
+        };
+        examNumbersGrid.appendChild(numBtn);
+      });
+
+      // Update answered count & progress
+      const answeredTotal = Object.keys(answers).filter(k => answers[k] !== null).length;
+      examAnsweredCount.textContent = answeredTotal;
+      examProgressBar.style.width = ((answeredTotal / questions.length) * 100) + '%';
+
+      // Prev/Next buttons
+      btnPrevQuestion.disabled = currentQuestionIndex === 0;
+      btnPrevQuestion.style.opacity = currentQuestionIndex === 0 ? '0.5' : '1';
+      if (currentQuestionIndex === questions.length - 1) {
+        btnNextQuestion.classList.add('hidden');
+      } else {
+        btnNextQuestion.classList.remove('hidden');
+      }
+    }
+
+    btnPrevQuestion.onclick = () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderExam();
+      }
+    };
+
+    btnNextQuestion.onclick = () => {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        renderExam();
+      }
+    };
+
+    btnToggleFlag.onclick = () => {
+      const qId = questions[currentQuestionIndex].id;
+      flagged[qId] = !flagged[qId];
+      renderExam();
+    };
+
+    // Submit dialog
+    btnFinishExam.onclick = () => {
+      const answeredTotal = Object.keys(answers).filter(k => answers[k] !== null).length;
+      const unanswered = questions.length - answeredTotal;
+      modalAnsweredCount.textContent = answeredTotal;
+      if (unanswered > 0) {
+        modalUnansweredBox.textContent = 'Masih ada ' + unanswered + ' soal yang belum dijawab!';
+        modalUnansweredBox.classList.remove('hidden');
+      } else {
+        modalUnansweredBox.textContent = 'Hebat! Semua soal (25 soal) sudah kamu jawab.';
+        modalUnansweredBox.classList.remove('hidden');
+      }
+      modalConfirm.classList.remove('hidden');
+    };
+
+    btnCancelSubmit.onclick = () => {
+      modalConfirm.classList.add('hidden');
+    };
+
+    btnConfirmSubmit.onclick = () => {
+      modalConfirm.classList.add('hidden');
+      finishEvaluation();
+    };
+
+    function finishEvaluation() {
+      let correct = 0;
+      let incorrect = 0;
+      let empty = 0;
+      let lotsC = 0, motsC = 0, hotsC = 0;
+
+      questions.forEach(q => {
+        const ans = answers[q.id];
+        if (!ans) {
+          empty++;
+        } else if (ans === q.correctAnswer) {
+          correct++;
+          if (q.level === 'LOTS') lotsC++;
+          if (q.level === 'MOTS') motsC++;
+          if (q.level === 'HOTS') hotsC++;
+        } else {
+          incorrect++;
+        }
+      });
+
+      const score = correct * 4;
+      let motivation = '';
+      if (score >= 90) {
+        motivation = 'Luar biasa! Kamu menunjukkan pemahaman yang sangat baik pada materi Rasio dan Skala.';
+      } else if (score >= 75) {
+        motivation = 'Bagus! Terus pertahankan dan tingkatkan kemampuanmu dalam memecahkan masalah matematika.';
+      } else if (score >= 60) {
+        motivation = 'Kamu sudah berusaha dengan baik. Pelajari kembali materi yang belum dikuasai agar semakin mahir.';
+      } else {
+        motivation = 'Jangan menyerah! Terus berlatih dan berdiskusi dengan guru agar semakin memahami konsep rasio dan skala.';
+      }
+
+      // Save local record
+      const record = {
+        id: 'eval_' + Date.now(),
+        studentName: student.name,
+        studentGrade: student.grade,
+        dateFormatted: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        score,
+        correctCount: correct,
+        incorrectCount: incorrect,
+        emptyCount: empty,
+        lotsCorrect: lotsC,
+        motsCorrect: motsC,
+        hotsCorrect: hotsC,
+      };
+
+      try {
+        const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        hist.unshift(record);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 100)));
+      } catch (e) {}
+
+      // Render Result View
+      viewExam.classList.add('hidden');
+      viewResult.classList.remove('hidden');
+
+      document.getElementById('resStudentInfo').textContent = 'Nama: ' + student.name + ' · Kelas: ' + student.grade + ' · Waktu: ' + record.dateFormatted;
+      document.getElementById('resScoreText').textContent = score;
+      document.getElementById('resMotivation').textContent = motivation;
+      document.getElementById('resCorrectCount').textContent = correct;
+      document.getElementById('resIncorrectCount').textContent = incorrect;
+      document.getElementById('resEmptyCount').textContent = empty;
+
+      document.getElementById('resLotsText').textContent = lotsC + ' / 8 Soal (' + Math.round((lotsC / 8) * 100) + '%)';
+      document.getElementById('resLotsBar').style.width = ((lotsC / 8) * 100) + '%';
+
+      document.getElementById('resMotsText').textContent = motsC + ' / 10 Soal (' + Math.round((motsC / 10) * 100) + '%)';
+      document.getElementById('resMotsBar').style.width = ((motsC / 10) * 100) + '%';
+
+      document.getElementById('resHotsText').textContent = hotsC + ' / 7 Soal (' + Math.round((hotsC / 7) * 100) + '%)';
+      document.getElementById('resHotsBar').style.width = ((hotsC / 7) * 100) + '%';
+    }
+
+    btnNewExam.onclick = () => {
+      viewResult.classList.add('hidden');
+      viewWelcome.classList.remove('hidden');
+      inputStudentName.value = '';
+    };
+
+    // Teacher modal handlers
+    btnOpenTeacherModal.onclick = () => {
+      renderTeacherTable();
+      modalTeacher.classList.remove('hidden');
+    };
+    btnCloseTeacherModal.onclick = () => {
+      modalTeacher.classList.add('hidden');
+    };
+
+    function renderTeacherTable() {
+      const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      teacherRecordCount.textContent = hist.length + ' Catatan Tersimpan';
+      teacherTableBody.innerHTML = '';
+      if (hist.length === 0) {
+        teacherTableBody.innerHTML = '<tr><td colspan="8" class="text-center p-4 text-slate-400">Belum ada data evaluasi tersimpan di browser ini.</td></tr>';
+        return;
+      }
+      hist.forEach(h => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50';
+        tr.innerHTML = '<td class="p-2.5 font-mono text-[11px]">' + h.dateFormatted + '</td>' +
+          '<td class="p-2.5 font-bold text-slate-800">' + h.studentName + '</td>' +
+          '<td class="p-2.5">' + h.studentGrade + '</td>' +
+          '<td class="p-2.5 font-bold font-mono text-indigo-700">' + h.score + '</td>' +
+          '<td class="p-2.5">' + h.correctCount + ' / ' + h.incorrectCount + ' / ' + h.emptyCount + '</td>' +
+          '<td class="p-2.5 font-mono">' + h.lotsCorrect + '/8</td>' +
+          '<td class="p-2.5 font-mono">' + h.motsCorrect + '/10</td>' +
+          '<td class="p-2.5 font-mono">' + h.hotsCorrect + '/7</td>';
+        teacherTableBody.appendChild(tr);
+      });
+    }
+
+    btnExportCSV.onclick = () => {
+      const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      if (!hist.length) {
+        alert('Belum ada data untuk diunduh.');
+        return;
+      }
+      const headers = ['No', 'Tanggal', 'Nama Siswa', 'Kelas', 'Nilai', 'Benar', 'Salah', 'Kosong', 'LOTS', 'MOTS', 'HOTS'];
+      const rows = hist.map((r, i) => [
+        i + 1,
+        '"' + r.dateFormatted + '"',
+        '"' + (r.studentName || '').replace(/"/g, '""') + '"',
+        '"' + (r.studentGrade || '').replace(/"/g, '""') + '"',
+        r.score,
+        r.correctCount,
+        r.incorrectCount,
+        r.emptyCount,
+        '"' + r.lotsCorrect + '/8"',
+        '"' + r.motsCorrect + '/10"',
+        '"' + r.hotsCorrect + '/7"'
+      ].join(','));
+      const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Rekap_Rasio_Skala_' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+
+    btnClearHistory.onclick = () => {
+      if (confirm('Apakah Anda yakin ingin menghapus semua catatan hasil evaluasi di browser ini?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderTeacherTable();
+      }
+    };
+  </script>
+</body>
+</html>
